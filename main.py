@@ -2,12 +2,14 @@ import csv
 
 
 def read_file(filename: str) -> list:
+    '''Return data from csv file'''
     with open(filename, newline='') as csvfile:
         spamreader = list(csv.reader(csvfile, delimiter=';'))
         return spamreader
 
 
 def menu() -> None:
+    '''Print options'''
     print('Введите номер действия, которое хотите совершить:')
     options_map = ['    1. Вывести в понятном виде иерархию команд',
                    '    2. Вывести сводный отчёт по департаментам ',
@@ -17,6 +19,7 @@ def menu() -> None:
 
 
 def get_answer() -> int:
+    '''Geting and processing of the response'''
     menu()
     answer = input()
     int_answer = 0
@@ -32,6 +35,7 @@ def get_answer() -> int:
 
 
 def select_option(answer: int, hierarchy: dict, report: dict) -> None:
+    '''Execute a function depending on the response'''
     if answer == 1:
         print_command_hierarchy(hierarchy)
     if answer == 2:
@@ -41,6 +45,7 @@ def select_option(answer: int, hierarchy: dict, report: dict) -> None:
 
 
 def get_command_hierarchy(data: list) -> dict[str, list]:
+    '''Form a hierarchy of departments'''
     hierarchy: dict[str, list] = {}
     for i in range(1, len(data)):
         if data[i][1] in hierarchy:
@@ -51,6 +56,7 @@ def get_command_hierarchy(data: list) -> dict[str, list]:
 
 
 def print_command_hierarchy(hierarchy: dict) -> None:
+    '''Print a hierarchy of departments'''
     for k, v in hierarchy.items():
         print('Департамент: ', k)
         print('Команды:', end=' ')
@@ -58,6 +64,7 @@ def print_command_hierarchy(hierarchy: dict) -> None:
 
 
 def get_report(data: list) -> dict[str, list]:
+    '''Form a report by department'''
     report: dict[str, list] = {}
     for i in range(1, len(data)):
         if data[i][2] in report:
@@ -71,17 +78,19 @@ def get_report(data: list) -> dict[str, list]:
 
 
 def print_report(report: dict[str, list]) -> None:
+    '''Print a report by department'''
     print('')
-    print("{:<22}{:<10} {:<20}{:<25}".format('Название',
+    print('{:<22}{:<10} {:<20}{:<25}'.format('Название',
           'Численность', 'Зарплатная вилка', 'Средняя зарплата'))
     for name, data in report.items():
         count, min, max, mean = data
-        print("{:<22} {:<10} {:<20} {:<25}".format(
+        print('{:<22} {:<10} {:<20} {:<25}'.format(
             name, count, str(min) + ' - ' + str(max), mean))
     print('')
 
 
 def report_to_csv(report: dict[str, list]) -> None:
+    '''Export a report by department to csv file'''
     with open('report.csv', 'w', newline='') as output_file:
         data_writer = csv.writer(output_file,  delimiter=';')
         data_writer.writerow(['Название', 'Численность',
